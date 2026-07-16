@@ -7,11 +7,7 @@
 그럼 게시판 글쓰기 항목에 "탭 박스" 추가됩니다.
 
 <img width="143" height="31" alt="image" src="https://github.com/user-attachments/assets/a4410178-a981-4144-9c0d-23f4dd922b63" />
-
-
-
-
- 
+<p></p> 
 
 • 탭 박스 — 본문내용에 책갈피 형태의 탭 박스가 생성됩니다.
 <img width="969" height="199" alt="image" src="https://github.com/user-attachments/assets/d587f152-514d-4174-90bb-eb8aece13b45" />
