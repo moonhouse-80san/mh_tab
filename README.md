@@ -6,7 +6,8 @@
 
 그럼 게시판 글쓰기 항목에 "탭 박스" 추가됩니다.
 
-2026-07-16 12 50 37.jpg
+<img width="143" height="31" alt="image" src="https://github.com/user-attachments/assets/a4410178-a981-4144-9c0d-23f4dd922b63" />
+
 
  
 
@@ -16,7 +17,7 @@
 
 • 에디터 창에서 입력 — 에디터 입력 창에서 이미지나 기타 항목을 추가할 수 있습니다.
 
-image.png
+<img width="966" height="849" alt="image" src="https://github.com/user-attachments/assets/9a26b8fa-3c9f-4163-99b2-b4d771e2a3dc" />
 
 • 탭 순서 변경 — 탭의 순서를 임의로 바꿀 수 있습니다.
 
