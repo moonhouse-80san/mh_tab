@@ -1,0 +1,105 @@
+<load target="./popup.js" />
+<load target="./popup.css" />
+<load target="../lang" />
+
+<div class="x_modal-header">
+	<h1>{$component_info->title} ver. {$component_info->version}</h1>
+	<a class="close_window" href="javascript:window.close()">&times;</a>
+</div>
+
+<form action="./" method="get" onSubmit="return false" id="fo">
+	<div id="popBody">
+		<table cellspacing="0" class="adminTable">
+			<col width="110" />
+			<col />
+
+			<!-- 선택된 탭 색상 -->
+			<tr>
+				<th scope="row">{$lang->tab_color_active}</th>
+				<td>
+					<div class="row-inline">
+						<label class="opt-label">배경색:</label>
+						<div class="color-wrap">
+							<input type="color" id="tab_active_bg" value="#3a7abf" class="color-picker" />
+							<input type="text" id="tab_active_bg_hex" class="inputTypeText hex-input" value="#3a7abf" placeholder="#3a7abf" maxlength="7" />
+						</div>
+						<span class="opt-sep"></span>
+						<label class="opt-label">글자색:</label>
+						<div class="color-wrap">
+							<input type="color" id="tab_active_color" value="#ffffff" class="color-picker" />
+							<input type="text" id="tab_active_color_hex" class="inputTypeText hex-input" value="#ffffff" placeholder="#ffffff" maxlength="7" />
+						</div>
+					</div>
+				</td>
+			</tr>
+
+			<!-- 비선택 탭 색상 -->
+			<tr>
+				<th scope="row">{$lang->tab_color_inactive}</th>
+				<td>
+					<div class="row-inline">
+						<label class="opt-label">배경색:</label>
+						<div class="color-wrap">
+							<input type="color" id="tab_inactive_bg" value="#f5f5f5" class="color-picker" />
+							<input type="text" id="tab_inactive_bg_hex" class="inputTypeText hex-input" value="#f5f5f5" placeholder="#f5f5f5" maxlength="7" />
+						</div>
+						<span class="opt-sep"></span>
+						<label class="opt-label">글자색:</label>
+						<div class="color-wrap">
+							<input type="color" id="tab_inactive_color" value="#555555" class="color-picker" />
+							<input type="text" id="tab_inactive_color_hex" class="inputTypeText hex-input" value="#555555" placeholder="#555555" maxlength="7" />
+						</div>
+					</div>
+				</td>
+			</tr>
+
+			<!-- 제목/내용 폰트 크기 및 내용 색상 -->
+			<tr>
+				<th scope="row">{$lang->tab_font_size}</th>
+				<td>
+					<div class="row-inline">
+						<label class="opt-label">{$lang->tab_size_title}:</label>
+						<input type="text" id="tab_title_size" class="inputTypeText size-input" placeholder="15px" />
+						<span class="opt-sep"></span>
+						<label class="opt-label">{$lang->tab_size_content}:</label>
+						<input type="text" id="tab_content_size" class="inputTypeText size-input" placeholder="14px" />
+						<span class="hint">{$lang->tab_size_hint}</span>
+					</div>
+					<div class="row-inline mt6">
+						<label class="opt-label">내용 글자색:</label>
+						<div class="color-wrap">
+							<input type="color" id="tab_content_color" value="#333333" class="color-picker" />
+							<input type="text" id="tab_content_color_hex" class="inputTypeText hex-input" value="#333333" placeholder="#333333" maxlength="7" />
+						</div>
+					</div>
+				</td>
+			</tr>
+
+			<!-- 탭 목록 -->
+			<tr>
+				<th scope="row">{$lang->tab_title}</th>
+				<td>
+					<button type="button" id="btn-add-tab" onclick="addTabItem()">+ {$lang->tab_add_item}</button>
+					<span class="hint" style="margin-left:8px;">{$lang->tab_max_hint}</span>
+					<div id="tab-list"></div>
+				</td>
+			</tr>
+
+			<!-- 미리보기 -->
+			<tr>
+				<th scope="row">{$lang->tab_preview}</th>
+				<td>
+					<div id="preview-area"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="x_clearfix btnArea">
+		<div class="x_pull-right">
+			<a href="#" onclick="insertTab()"><button type="button" class="x_btn x_btn-primary">{$lang->cmd_insert}</button></a>
+			<a class="x_btn" href="{getUrl('','module','editor','act','dispEditorComponentInfo','component_name',$component_info->component_name)}" target="_blank" onclick="window.open(this.href,'ComponentInfo','width=10,height=10');return false;">{$lang->about_component}</a>
+			<a href="#" onclick="window.close(); return false;"><button type="button" class="x_btn">{$lang->cmd_close}</button></a>
+		</div>
+	</div>
+</form>

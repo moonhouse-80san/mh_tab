@@ -1,0 +1,285 @@
+/* mh_tab 컴포넌트 팝업 스타일 */
+body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif; }
+
+#popBody { padding: 10px 0; }
+
+.adminTable { width: 100%; border-collapse: collapse; }
+.adminTable th {
+	text-align: left;
+	padding: 7px 10px;
+	background: #f5f5f5;
+	border: 1px solid #ddd;
+	font-weight: 600;
+	white-space: nowrap;
+	vertical-align: top;
+}
+.adminTable td {
+	padding: 7px 10px;
+	border: 1px solid #ddd;
+	vertical-align: middle;
+}
+
+/* 가로 인라인 묶음 */
+.row-inline {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+.row-inline + .row-inline,
+.row-inline.mt6 { margin-top: 6px; }
+
+.opt-label {
+	font-size: 12px;
+	color: #666;
+	white-space: nowrap;
+}
+.opt-sep { display: inline-block; width: 8px; }
+.hint { font-size: 11px; color: #999; }
+
+/* 색상 picker + hex 입력 묶음 */
+.color-wrap {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+.color-picker {
+	width: 48px !important;
+	height: 35px !important;
+	padding: 1px 2px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	cursor: pointer;
+	vertical-align: middle;
+	flex-shrink: 0;
+}
+.hex-input {
+	width: 64px !important;
+	font-size: 12px !important;
+	padding: 3px 5px !important;
+	font-family: monospace;
+}
+
+/* 폰트 크기 입력(14px, 1.2em 등) */
+.size-input {
+	width: 60px !important;
+	font-size: 12px !important;
+	padding: 3px 5px !important;
+	font-family: monospace;
+}
+
+.inputTypeText {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 4px 6px;
+	font-size: 13px;
+}
+
+/* 탭 추가 버튼 */
+#btn-add-tab {
+	padding: 4px 12px;
+	border: 1px solid #aaa;
+	border-radius: 3px;
+	background: #f0f0f0;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+/* 탭 목록 */
+#tab-list {
+	margin-top: 8px;
+	width: 100%;
+}
+
+/* 드래그 핸들 */
+.drag-handle {
+	cursor: grab;
+	font-size: 16px;
+	color: #bbb;
+	line-height: 1;
+	flex-shrink: 0;
+	user-select: none;
+	padding: 0 2px;
+	transition: color .15s;
+}
+.drag-handle:hover { color: #888; }
+.drag-handle:active { cursor: grabbing; }
+
+/* 탭 항목: 1행(핸들+제목+삭제), 2행(내용 textarea) */
+.tab-item {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 8px;
+	padding: 8px;
+	background: #fafafa;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	box-sizing: border-box;
+	width: 100%;
+	transition: opacity .15s, box-shadow .15s;
+}
+.tab-item.dragging {
+	opacity: .4;
+	box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.tab-item .item-row1 {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+}
+.tab-item .item-row2 {
+	width: 100%;
+}
+.tab-item .tab-idx {
+	font-size: 12px;
+	color: #999;
+	flex-shrink: 0;
+	width: 18px;
+	text-align: center;
+}
+.tab-item input[type="text"],
+.tab-item .f-title {
+    box-sizing: border-box;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 8px 12px !important;
+    line-height: 30px !important;
+    font-size: 14px !important;
+}
+.tab-item .btn-del {
+	cursor: pointer;
+	color: #c00;
+	font-size: 16px;
+	line-height: 1;
+	border: none;
+	background: none;
+	padding: 0 4px;
+	flex-shrink: 0;
+}
+.tab-item .tab-content-area {
+	width: 100%;
+	min-height: 80px;
+	box-sizing: border-box;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 6px 8px;
+	font-size: 12px;
+	font-family: monospace;
+	line-height: 1.5;
+	resize: vertical;
+}
+.tab-item .content-label {
+	font-size: 11px;
+	color: #888;
+	display: block;
+	margin-bottom: 3px;
+}
+
+/* 미리보기 영역 컨테이너 */
+#preview-area {
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	min-height: 60px;
+}
+
+/* 버튼 영역 */
+.btnArea { padding: 10px 0 0; }
+.x_btn { display: inline-block; padding: 5px 14px; border-radius: 3px; border: 1px solid #bbb; background: #f5f5f5; cursor: pointer; font-size: 13px; text-decoration: none; color: #333; }
+.x_btn-primary { background: #3a7abf; color: #fff; border-color: #2e6da4; }
+.x_pull-right { float: right; }
+.x_clearfix::after { content: ''; display: block; clear: both; }
+
+/* ── 탭 미리보기 (실제 mh_tab.css와 동일한 순수 CSS 라디오 방식) ── */
+#preview-area .mh_tab_wrap {
+	position: relative;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fff;
+}
+#preview-area .mh_tab_radio {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+#preview-area .mh_tab_nav {
+	display: flex;
+	flex-wrap: wrap;
+	background: var(--mh_tab_inactive_bg, #f5f5f5);
+	border-bottom: 1px solid #ddd;
+}
+#preview-area .mh_tab_btn {
+	flex: 1 1 auto;
+	text-align: center;
+	padding: 10px 14px;
+	border-right: 1px solid #ddd;
+	background: var(--mh_tab_inactive_bg, #f5f5f5);
+	color: var(--mh_tab_inactive_color, #555555);
+	font-size: var(--mh_tab_title_size, 15px);
+	cursor: pointer;
+	user-select: none;
+}
+#preview-area .mh_tab_btn:last-child { border-right: none; }
+#preview-area .mh_tab_panels { background: #fff; }
+#preview-area .mh_tab_panel {
+	display: none;
+	padding: 14px;
+	font-size: var(--mh_tab_content_size, 14px);
+	color: var(--mh_tab_content_color, #333333);
+}
+#preview-area .mh_tab_empty {
+	padding: 14px;
+	color: #aaa;
+}
+#preview-area .mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(1),
+#preview-area .mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(2),
+#preview-area .mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(3),
+#preview-area .mh_tab_radio:nth-of-type(4):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(4),
+#preview-area .mh_tab_radio:nth-of-type(5):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(5),
+#preview-area .mh_tab_radio:nth-of-type(6):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(6),
+#preview-area .mh_tab_radio:nth-of-type(7):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(7),
+#preview-area .mh_tab_radio:nth-of-type(8):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(8),
+#preview-area .mh_tab_radio:nth-of-type(9):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(9),
+#preview-area .mh_tab_radio:nth-of-type(10):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(10),
+#preview-area .mh_tab_radio:nth-of-type(11):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(11),
+#preview-area .mh_tab_radio:nth-of-type(12):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(12),
+#preview-area .mh_tab_radio:nth-of-type(13):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(13),
+#preview-area .mh_tab_radio:nth-of-type(14):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(14),
+#preview-area .mh_tab_radio:nth-of-type(15):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(15),
+#preview-area .mh_tab_radio:nth-of-type(16):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(16),
+#preview-area .mh_tab_radio:nth-of-type(17):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(17),
+#preview-area .mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(18),
+#preview-area .mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(19),
+#preview-area .mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20) {
+	background: var(--mh_tab_active_bg, #3a7abf);
+	color: var(--mh_tab_active_color, #ffffff);
+	font-weight: 600;
+}
+#preview-area .mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(1),
+#preview-area .mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(2),
+#preview-area .mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(3),
+#preview-area .mh_tab_radio:nth-of-type(4):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(4),
+#preview-area .mh_tab_radio:nth-of-type(5):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(5),
+#preview-area .mh_tab_radio:nth-of-type(6):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(6),
+#preview-area .mh_tab_radio:nth-of-type(7):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(7),
+#preview-area .mh_tab_radio:nth-of-type(8):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(8),
+#preview-area .mh_tab_radio:nth-of-type(9):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(9),
+#preview-area .mh_tab_radio:nth-of-type(10):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(10),
+#preview-area .mh_tab_radio:nth-of-type(11):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(11),
+#preview-area .mh_tab_radio:nth-of-type(12):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(12),
+#preview-area .mh_tab_radio:nth-of-type(13):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(13),
+#preview-area .mh_tab_radio:nth-of-type(14):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(14),
+#preview-area .mh_tab_radio:nth-of-type(15):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(15),
+#preview-area .mh_tab_radio:nth-of-type(16):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(16),
+#preview-area .mh_tab_radio:nth-of-type(17):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(17),
+#preview-area .mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(18),
+#preview-area .mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(19),
+#preview-area .mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(20) {
+	display: block;
+}

@@ -1,0 +1,106 @@
+@charset "UTF-8";
+
+.mh_tab_wrap {
+	position: relative;
+	margin: 10px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fff;
+}
+
+/* 라디오는 화면에 보이지 않고 상태 저장 용도로만 사용 (JS 없이 순수 CSS로 탭 전환) */
+.mh_tab_radio {
+	position: absolute;
+	width: 0;
+	height: 0;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.mh_tab_nav {
+	display: flex;
+	flex-wrap: wrap;
+	background: var(--mh_tab_inactive_bg, #f5f5f5);
+	border-bottom: 1px solid #ddd;
+}
+
+.mh_tab_btn {
+	flex: 1 1 auto;
+	text-align: center;
+	padding: 10px 14px;
+	border-right: 1px solid #ddd;
+	background: var(--mh_tab_inactive_bg, #f5f5f5);
+	color: var(--mh_tab_inactive_color, #555555);
+	font-size: var(--mh_tab_title_size, 15px);
+	cursor: pointer;
+	user-select: none;
+	transition: background .15s, color .15s;
+}
+.mh_tab_btn:last-child {
+	border-right: none;
+}
+.mh_tab_btn:hover {
+	opacity: .85;
+}
+
+.mh_tab_panels {
+	background: #fff;
+}
+
+.mh_tab_panel {
+	display: none;
+	padding: 14px;
+	font-size: var(--mh_tab_content_size, 14px);
+	color: var(--mh_tab_content_color, #333333);
+}
+
+/* 선택된 탭 버튼 색상 */
+.mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(1),
+.mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(2),
+.mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(3),
+.mh_tab_radio:nth-of-type(4):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(4),
+.mh_tab_radio:nth-of-type(5):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(5),
+.mh_tab_radio:nth-of-type(6):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(6),
+.mh_tab_radio:nth-of-type(7):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(7),
+.mh_tab_radio:nth-of-type(8):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(8),
+.mh_tab_radio:nth-of-type(9):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(9),
+.mh_tab_radio:nth-of-type(10):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(10),
+.mh_tab_radio:nth-of-type(11):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(11),
+.mh_tab_radio:nth-of-type(12):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(12),
+.mh_tab_radio:nth-of-type(13):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(13),
+.mh_tab_radio:nth-of-type(14):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(14),
+.mh_tab_radio:nth-of-type(15):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(15),
+.mh_tab_radio:nth-of-type(16):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(16),
+.mh_tab_radio:nth-of-type(17):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(17),
+.mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(18),
+.mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(19),
+.mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20) {
+	background: var(--mh_tab_active_bg, #3a7abf);
+	color: var(--mh_tab_active_color, #ffffff);
+	font-weight: 600;
+}
+
+/* 선택된 탭에 대응하는 내용 패널 표시 */
+.mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(1),
+.mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(2),
+.mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(3),
+.mh_tab_radio:nth-of-type(4):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(4),
+.mh_tab_radio:nth-of-type(5):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(5),
+.mh_tab_radio:nth-of-type(6):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(6),
+.mh_tab_radio:nth-of-type(7):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(7),
+.mh_tab_radio:nth-of-type(8):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(8),
+.mh_tab_radio:nth-of-type(9):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(9),
+.mh_tab_radio:nth-of-type(10):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(10),
+.mh_tab_radio:nth-of-type(11):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(11),
+.mh_tab_radio:nth-of-type(12):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(12),
+.mh_tab_radio:nth-of-type(13):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(13),
+.mh_tab_radio:nth-of-type(14):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(14),
+.mh_tab_radio:nth-of-type(15):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(15),
+.mh_tab_radio:nth-of-type(16):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(16),
+.mh_tab_radio:nth-of-type(17):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(17),
+.mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(18),
+.mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(19),
+.mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(20) {
+	display: block;
+}
