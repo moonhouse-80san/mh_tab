@@ -12,6 +12,8 @@
  
 
 • 탭 박스 — 본문내용에 책갈피 형태의 탭 박스가 생성됩니다.
+<img width="969" height="199" alt="image" src="https://github.com/user-attachments/assets/d587f152-514d-4174-90bb-eb8aece13b45" />
+
 
 • 팝업창에서 입력 — 팝업창에서 탭의 제목과 내용을 입력 할 수 있습니다.
 <img width="782" height="959" alt="image" src="https://github.com/user-attachments/assets/fb709039-350b-476a-87a1-83211e817bfa" />
