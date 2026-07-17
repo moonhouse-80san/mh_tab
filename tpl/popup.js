@@ -259,6 +259,7 @@ function currentStyleOptions() {
 		inactive_bg:    getColorValue('tab_inactive_bg',    '#f5f5f5'),
 		inactive_color: getColorValue('tab_inactive_color', '#555555'),
 		content_color:  getColorValue('tab_content_color',  '#333333'),
+		content_bg:     getColorValue('tab_content_bg',     '#ffffff'),
 		title_size:     getSizeValue('tab_title_size')   || '15px',
 		content_size:   getSizeValue('tab_content_size') || '14px'
 	};
@@ -270,6 +271,7 @@ function styleVarString(opt) {
 		+ '--mh_tab_inactive_bg:' + opt.inactive_bg + ';'
 		+ '--mh_tab_inactive_color:' + opt.inactive_color + ';'
 		+ '--mh_tab_content_color:' + opt.content_color + ';'
+		+ '--mh_tab_content_bg:' + opt.content_bg + ';'
 		+ '--mh_tab_title_size:' + opt.title_size + ';'
 		+ '--mh_tab_content_size:' + opt.content_size + ';';
 }
@@ -303,13 +305,12 @@ function updatePreview() {
  * 대체되어 중복 문제가 없다. */
 function buildInlineTabCSS() {
 	return '<style>'
-		+ '.mh_tab_wrap{position:relative;border:1px solid #ddd;border-radius:6px;overflow:hidden;background:#fff}'
+		+ '.mh_tab_wrap{position:relative}'
 		+ '.mh_tab_radio{position:absolute;width:0;height:0;opacity:0;pointer-events:none}'
-		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;background:var(--mh_tab_inactive_bg,#f5f5f5);border-bottom:1px solid #ddd}'
-		+ '.mh_tab_btn{flex:1 1 auto;text-align:center;padding:10px 14px;border-right:1px solid #ddd;background:var(--mh_tab_inactive_bg,#f5f5f5);color:var(--mh_tab_inactive_color,#555555);font-size:var(--mh_tab_title_size,15px);user-select:none}'
-		+ '.mh_tab_btn:last-child{border-right:none}'
+		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0px;background:transparent}'
+		+ '.mh_tab_btn{flex:1 1 auto;text-align:center;padding:10px 14px;background: var(--mh_tab_inactive_bg, #f5f5f5);color:var(--mh_tab_inactive_color,#555555);font-size:var(--mh_tab_title_size,15px);user-select:none;border-radius: 14px 14px 0 0}'
 		+ buildNthOfTypeRules('.mh_tab_nav .mh_tab_btn', 'background:var(--mh_tab_active_bg,#3a7abf);color:var(--mh_tab_active_color,#ffffff);font-weight:600;')
-		+ '.mh_tab_panels{background:#fff}'
+		+ '.mh_tab_panels{border: 1px solid var(--mh_tab_inactive_bg, #f5f5f5);border-top:0px;border-radius: 0 0 10px 10px;overflow:hidden;background:var(--mh_tab_content_bg,#fff)}'
 		/* 에디터 작성 화면에서는 실제 사이트와 달리 선택되지 않은 탭도 숨기지 않고
 		 * 전부 순서대로 펼쳐서 보여준다 — 그래야 각 탭 내용을 눈으로 보면서
 		 * 바로 수정/추가할 수 있기 때문이다(실제 사이트 노출 방식은 front-end에서
@@ -347,6 +348,7 @@ function buildTabWrapperHTML() {
 		+ ' inactive_bg="' + opt.inactive_bg + '"'
 		+ ' inactive_color="' + opt.inactive_color + '"'
 		+ ' content_color="' + opt.content_color + '"'
+		+ ' content_bg="' + opt.content_bg + '"'
 		+ ' title_size="' + opt.title_size + '"'
 		+ ' content_size="' + opt.content_size + '"'
 		+ ' style="' + styleVarString(opt) + '">'
@@ -414,6 +416,7 @@ function getTab() {
 	var ib = node.getAttribute('inactive_bg')    || '#f5f5f5';
 	var ic = node.getAttribute('inactive_color') || '#555555';
 	var cc = node.getAttribute('content_color')  || '#333333';
+	var cbg = node.getAttribute('content_bg')    || '#ffffff';
 
 	xGetElementById('tab_active_bg').value        = ab;
 	xGetElementById('tab_active_bg_hex').value    = ab;
@@ -425,6 +428,8 @@ function getTab() {
 	xGetElementById('tab_inactive_color_hex').value = ic;
 	xGetElementById('tab_content_color').value      = cc;
 	xGetElementById('tab_content_color_hex').value  = cc;
+	xGetElementById('tab_content_bg').value         = cbg;
+	xGetElementById('tab_content_bg_hex').value     = cbg;
 
 	xGetElementById('tab_title_size').value   = node.getAttribute('title_size')   || '';
 	xGetElementById('tab_content_size').value = node.getAttribute('content_size') || '';
@@ -468,6 +473,7 @@ function getTab() {
 		bindColorPair('tab_inactive_bg',    'tab_inactive_bg_hex');
 		bindColorPair('tab_inactive_color', 'tab_inactive_color_hex');
 		bindColorPair('tab_content_color',  'tab_content_color_hex');
+		bindColorPair('tab_content_bg',     'tab_content_bg_hex');
 
 		['tab_title_size', 'tab_content_size'].forEach(bindSizeInput);
 
@@ -487,3 +493,4 @@ function getTab() {
 	if (typeof xAddEventListener !== 'undefined') xAddEventListener(window, 'load', onLoad);
 	else window.addEventListener('load', onLoad);
 })();
+

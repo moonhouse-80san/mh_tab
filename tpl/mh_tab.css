@@ -3,10 +3,6 @@
 .mh_tab_wrap {
 	position: relative;
 	margin: 10px;
-	border: 1px solid #ddd;
-	border-radius: 6px;
-	overflow: hidden;
-	background: #fff;
 }
 
 /* 라디오는 화면에 보이지 않고 상태 저장 용도로만 사용 (JS 없이 순수 CSS로 탭 전환) */
@@ -21,31 +17,33 @@
 .mh_tab_nav {
 	display: flex;
 	flex-wrap: wrap;
-	background: var(--mh_tab_inactive_bg, #f5f5f5);
-	border-bottom: 1px solid #ddd;
+	gap: 6px;
+	margin-bottom: 0px;
+	background: transparent;
 }
 
 .mh_tab_btn {
 	flex: 1 1 auto;
 	text-align: center;
 	padding: 10px 14px;
-	border-right: 1px solid #ddd;
 	background: var(--mh_tab_inactive_bg, #f5f5f5);
 	color: var(--mh_tab_inactive_color, #555555);
 	font-size: var(--mh_tab_title_size, 15px);
 	cursor: pointer;
 	user-select: none;
 	transition: background .15s, color .15s;
-}
-.mh_tab_btn:last-child {
-	border-right: none;
+	border-radius: 14px 14px 0 0;
 }
 .mh_tab_btn:hover {
 	opacity: .85;
 }
 
 .mh_tab_panels {
-	background: #fff;
+	border: 1px solid var(--mh_tab_inactive_bg, #f5f5f5);
+	border-top:0px;
+	border-radius: 0 0 10px 10px;
+	overflow: hidden;
+	background: var(--mh_tab_content_bg, #fff);
 }
 
 .mh_tab_panel {

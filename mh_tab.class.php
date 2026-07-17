@@ -42,6 +42,7 @@
 			$inactive_bg    = $this->safeColor($xml_obj->attrs->inactive_bg    ?? '', '#f5f5f5');
 			$inactive_color = $this->safeColor($xml_obj->attrs->inactive_color ?? '', '#555555');
 			$content_color  = $this->safeColor($xml_obj->attrs->content_color  ?? '', '#333333');
+			$content_bg     = $this->safeColor($xml_obj->attrs->content_bg     ?? '', '#ffffff');
 
 			$title_size   = $this->safeFontSize($xml_obj->attrs->title_size   ?? '');
 			$content_size = $this->safeFontSize($xml_obj->attrs->content_size ?? '');
@@ -82,6 +83,7 @@
 			$tab_info->inactive_bg    = $inactive_bg;
 			$tab_info->inactive_color = $inactive_color;
 			$tab_info->content_color  = $content_color;
+			$tab_info->content_bg     = $content_bg;
 			$tab_info->title_size     = $title_size   ?: '15px';
 			$tab_info->content_size   = $content_size ?: '14px';
 			$tab_info->mh_tabs_attr   = htmlspecialchars($tabs_json, ENT_QUOTES, 'UTF-8');
@@ -96,3 +98,4 @@
 		}
 	}
 ?>
+
