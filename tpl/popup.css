@@ -296,7 +296,7 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 #preview-area .mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20) {
 	font-weight: 600;
 	color: #ffffff;
-	text-shadow: #000 0 2px 2px;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 3px rgba(0,0,0,.55);
 }
 #preview-area .mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(1),
 #preview-area .mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(2),
