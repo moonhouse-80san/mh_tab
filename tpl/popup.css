@@ -177,6 +177,33 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 	margin-bottom: 3px;
 }
 
+/* 3행: 탭별 색상(탭 색상/탭 글자색/내용 배경색/내용 글자색) + 기본색 초기화 */
+.tab-item .item-row3 {
+	margin-top: 4px;
+	padding-top: 6px;
+	border-top: 1px dashed #e0e0e0;
+}
+.tab-item .item-row3 .color-wrap {
+	gap: 4px;
+}
+.tab-item .item-row3 .opt-label {
+	font-size: 11px;
+}
+.btn-reset-color {
+	margin-left: auto;
+	padding: 4px 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	background: #fff;
+	color: #666;
+	font-size: 11px;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+.btn-reset-color:hover {
+	background: #f0f0f0;
+}
+
 /* 미리보기 영역 컨테이너 */
 #preview-area {
 	padding: 10px;
@@ -222,6 +249,12 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 	user-select: none;
 	transition: background .15s, color .15s;
 	border-radius: 14px 14px 0 0;
+	box-sizing: border-box;
+}
+#preview-area .mh_tab_btn.mh_tab_shape_slant {
+	border-radius: 0;
+	clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 100%, 0 100%);
+	padding: 10px 28px 10px 14px;
 }
 #preview-area .mh_tab_panels {
 	border: 1px solid #ddd;
@@ -235,6 +268,7 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 	padding: 14px;
 	font-size: var(--mh_tab_content_size, 14px);
 	color: var(--mh_tab_content_color, #333333);
+	background: var(--mh_tab_content_bg, #fff);
 }
 #preview-area .mh_tab_empty {
 	padding: 14px;
@@ -260,9 +294,9 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 #preview-area .mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(18),
 #preview-area .mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(19),
 #preview-area .mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20) {
-	background: var(--mh_tab_active_bg, #3a7abf);
-	color: var(--mh_tab_active_color, #ffffff);
 	font-weight: 600;
+	color: #ffffff;
+	text-shadow: #000 0 2px 2px;
 }
 #preview-area .mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(1),
 #preview-area .mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_panels .mh_tab_panel:nth-of-type(2),

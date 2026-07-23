@@ -13,27 +13,19 @@
 			<col width="110" />
 			<col />
 
-			<!-- 선택된 탭 색상 -->
+			<!-- 책갈피 모양 -->
 			<tr>
-				<th scope="row">{$lang->tab_color_active}</th>
+				<th scope="row">{$lang->tab_shape_title}</th>
 				<td>
 					<div class="row-inline">
-						<label class="opt-label">배경색:</label>
-						<div class="color-wrap">
-							<input type="color" id="tab_active_bg" value="#3a7abf" class="color-picker" />
-							<input type="text" id="tab_active_bg_hex" class="inputTypeText hex-input" value="#3a7abf" placeholder="#3a7abf" maxlength="7" />
-						</div>
-						<span class="opt-sep"></span>
-						<label class="opt-label">글자색:</label>
-						<div class="color-wrap">
-							<input type="color" id="tab_active_color" value="#ffffff" class="color-picker" />
-							<input type="text" id="tab_active_color_hex" class="inputTypeText hex-input" value="#ffffff" placeholder="#ffffff" maxlength="7" />
-						</div>
+						<label class="opt-label"><input type="radio" name="tab_shape" id="tab_shape_round" value="round" checked /> {$lang->tab_shape_round}</label>
+						<label class="opt-label"><input type="radio" name="tab_shape" id="tab_shape_slant" value="slant" /> {$lang->tab_shape_slant}</label>
+						<span class="hint">{$lang->tab_shape_hint}</span>
 					</div>
 				</td>
 			</tr>
 
-			<!-- 비선택 탭 색상 -->
+			<!-- 비선택 탭 색상 (탭별 색상을 지정하지 않은 4번째 탭부터 적용되는 기본값) -->
 			<tr>
 				<th scope="row">{$lang->tab_color_inactive}</th>
 				<td>
@@ -49,6 +41,7 @@
 							<input type="color" id="tab_inactive_color" value="#555555" class="color-picker" />
 							<input type="text" id="tab_inactive_color_hex" class="inputTypeText hex-input" value="#555555" placeholder="#555555" maxlength="7" />
 						</div>
+						<span class="hint">탭별 색상을 지정하지 않은 4번째 탭부터 이 색이 기본으로 적용됩니다. 탭은 선택 여부와 관계없이 항상 자기 색상을 유지합니다.</span>
 					</div>
 				</td>
 			</tr>
@@ -65,19 +58,6 @@
 						<input type="text" id="tab_content_size" class="inputTypeText size-input" placeholder="14px" />
 						<span class="hint">{$lang->tab_size_hint}</span>
 					</div>
-					<div class="row-inline mt6">
-						<label class="opt-label">내용 배경색:</label>
-						<div class="color-wrap">
-							<input type="color" id="tab_content_bg" value="#ffffff" class="color-picker" />
-							<input type="text" id="tab_content_bg_hex" class="inputTypeText hex-input" value="#ffffff" placeholder="#ffffff" maxlength="7" />
-						</div>
-						<span class="opt-sep"></span>
-						<label class="opt-label">내용 글자색:</label>
-						<div class="color-wrap">
-							<input type="color" id="tab_content_color" value="#333333" class="color-picker" />
-							<input type="text" id="tab_content_color_hex" class="inputTypeText hex-input" value="#333333" placeholder="#333333" maxlength="7" />
-						</div>
-					</div>
 				</td>
 			</tr>
 
@@ -87,6 +67,8 @@
 				<td>
 					<button type="button" id="btn-add-tab" onclick="addTabItem()">+ {$lang->tab_add_item}</button>
 					<span class="hint" style="margin-left:8px;">{$lang->tab_max_hint}</span>
+					<div class="hint" style="margin-top:4px;">{$lang->tab_content_guide}</div>
+					<div class="hint">{$lang->tab_color_persec}</div>
 					<div id="tab-list"></div>
 				</td>
 			</tr>
