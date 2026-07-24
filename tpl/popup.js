@@ -35,6 +35,30 @@ function currentShapeFromNode(wrapNode) {
 	return (label && label.classList.contains('mh_tab_shape_slant')) ? 'slant' : 'round';
 }
 
+/* 현재 선택된 탭 전환 방식(자동/수동) 여부를 읽어온다 */
+function getAutoplayValue() {
+	var auto = xGetElementById('tab_switch_auto');
+	return !!(auto && auto.checked);
+}
+
+/* 자동 전환 간격(초)을 읽어온다. 1~600 범위를 벗어나거나 형식이 틀리면 기본 5초 */
+function getIntervalValue() {
+	var el = xGetElementById('tab_switch_interval');
+	var v = el ? parseInt(el.value, 10) : NaN;
+	if (isNaN(v) || v < 1) v = 5;
+	if (v > 600) v = 600;
+	return v;
+}
+
+/* wrapNode 자신의 mh_autoplay/mh_interval 속성을 읽어, 실시간 동기화 시
+ * mh_tabs JSON에 그대로 보존한다(탭 제목/내용을 편집해도 자동전환 설정이 사라지지 않도록) */
+function currentAutoplayFromNode(wrapNode) {
+	return {
+		autoplay: wrapNode.getAttribute('mh_autoplay') === '1',
+		interval: parseInt(wrapNode.getAttribute('mh_interval'), 10) || 5
+	};
+}
+
 /* label/panel 요소에 인라인으로 지정된 CSS 커스텀 변수 값을 읽어온다 */
 function getCssVar(el, name) {
 	return (el && el.style) ? el.style.getPropertyValue(name).trim() : '';
@@ -73,8 +97,11 @@ function attachLiveSync(wrapNode) {
 	var doc = wrapNode.ownerDocument;
 
 	function syncNow() {
+		var auto = currentAutoplayFromNode(wrapNode);
 		wrapNode.setAttribute('mh_tabs', JSON.stringify({
 			shape: currentShapeFromNode(wrapNode),
+			autoplay: auto.autoplay,
+			interval: auto.interval,
 			tabs: readTabsFromNode(wrapNode)
 		}));
 	}
@@ -495,13 +522,17 @@ function buildNthOfTypeRules(targetSelector, decl) {
 function buildTabWrapperHTML() {
 	var tabsArr = collectTabsArray();
 	var shape = getShapeValue();
+	var autoplay = getAutoplayValue();
+	var interval = getIntervalValue();
 	var opt = currentStyleOptions();
 	var groupName = 'mh_tab_group_' + Math.random().toString(36).slice(2, 10);
 	var markup = buildTabsMarkup(groupName, tabsArr, shape);
 	/* display.html(원본, 수정 불가)의 속성 목록에는 새 옵션을 추가할 자리가 없으므로,
-	 * 책갈피 모양(shape) 설정은 이 mh_tabs 하나의 속성 안에 { shape, tabs } 형태로
-	 * 함께 실어 보낸다 (mh_tab.class.php에서도 동일하게 읽는다). */
-	var tabsJson = JSON.stringify({ shape: shape, tabs: tabsArr });
+	 * 책갈피 모양(shape)과 자동전환 설정은 이 mh_tabs 하나의 속성 안에
+	 * { shape, autoplay, interval, tabs } 형태로 함께 실어 보낸다
+	 * (mh_tab.class.php에서도 동일하게 읽는다). mh_autoplay/mh_interval은
+	 * 실시간 동기화(readTabsFromNode)와 자동전환 스크립트가 참조하는 실제 값이다. */
+	var tabsJson = JSON.stringify({ shape: shape, autoplay: autoplay, interval: interval, tabs: tabsArr });
 
 	return '<div class="mh_tab_wrap"'
 		+ ' editor_component="mh_tab"'
@@ -513,6 +544,8 @@ function buildTabWrapperHTML() {
 		+ ' inactive_color="' + opt.inactive_color + '"'
 		+ ' title_size="' + opt.title_size + '"'
 		+ ' content_size="' + opt.content_size + '"'
+		+ ' mh_autoplay="' + (autoplay ? '1' : '0') + '"'
+		+ ' mh_interval="' + interval + '"'
 		+ ' style="' + styleVarString(opt) + '">'
 		+ buildInlineTabCSS()
 		+ markup.radioHtml
@@ -627,6 +660,15 @@ function getTab() {
 	xGetElementById('tab_shape_round').checked = (shape !== 'slant');
 	xGetElementById('tab_shape_slant').checked = (shape === 'slant');
 
+	/* 자동전환 설정은 wrapper 자신의 mh_autoplay/mh_interval 속성에서 읽는다
+	 * (구버전 문서에는 이 속성이 없으므로 그 경우 기본값인 수동/5초를 사용한다). */
+	var autoplay = node.getAttribute('mh_autoplay') === '1';
+	var savedInterval = parseInt(node.getAttribute('mh_interval'), 10) || 5;
+	xGetElementById('tab_switch_manual').checked = !autoplay;
+	xGetElementById('tab_switch_auto').checked   = autoplay;
+	xGetElementById('tab_switch_interval').value    = savedInterval;
+	xGetElementById('tab_switch_interval').disabled = !autoplay;
+
 	tabsArr.forEach(function(tab) {
 		addTabItem(tab.title || '', tab.content || '', tab.tab_bg, tab.tab_color, tab.content_bg, tab.content_color);
 	});
@@ -646,6 +688,17 @@ function getTab() {
 		['tab_shape_round', 'tab_shape_slant'].forEach(function(id) {
 			var el = xGetElementById(id);
 			if (el) el.addEventListener('change', updatePreview);
+		});
+
+		['tab_switch_manual', 'tab_switch_auto'].forEach(function(id) {
+			var el = xGetElementById(id);
+			if (el) el.addEventListener('change', function() {
+				xGetElementById('tab_switch_interval').disabled = !getAutoplayValue();
+			});
+		});
+		var ivEl = xGetElementById('tab_switch_interval');
+		if (ivEl) ivEl.addEventListener('blur', function() {
+			ivEl.value = getIntervalValue();
 		});
 
 		xGetElementById('tab-list').addEventListener('dragover', function(e) { e.preventDefault(); });

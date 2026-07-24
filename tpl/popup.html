@@ -25,6 +25,21 @@
 				</td>
 			</tr>
 
+			<!-- 탭 자동/수동 전환 -->
+			<tr>
+				<th scope="row">{$lang->tab_switch_title}</th>
+				<td>
+					<div class="row-inline">
+						<label class="opt-label"><input type="radio" name="tab_switch_mode" id="tab_switch_manual" value="manual" checked /> {$lang->tab_switch_manual}</label>
+						<label class="opt-label"><input type="radio" name="tab_switch_mode" id="tab_switch_auto" value="auto" /> {$lang->tab_switch_auto}</label>
+						<span class="opt-sep"></span>
+						<label class="opt-label" id="tab_switch_interval_label">{$lang->tab_switch_interval}:</label>
+						<input type="number" id="tab_switch_interval" class="inputTypeText size-input" value="5" min="1" max="600" step="1" style="width:60px;" disabled />
+						<span class="hint">{$lang->tab_switch_hint}</span>
+					</div>
+				</td>
+			</tr>
+
 			<!-- 비선택 탭 색상 (탭별 색상을 지정하지 않은 4번째 탭부터 적용되는 기본값) -->
 			<tr>
 				<th scope="row">{$lang->tab_color_inactive}</th>

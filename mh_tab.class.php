@@ -96,9 +96,13 @@
 			if (is_array($decoded) && isset($decoded['tabs']) && is_array($decoded['tabs'])) {
 				$tabs      = $decoded['tabs'];
 				$tab_shape = $this->safeShape((string) ($decoded['shape'] ?? 'round'));
+				$autoplay  = !empty($decoded['autoplay']);
+				$interval  = max(1, min(600, (int) ($decoded['interval'] ?? 5)));
 			} else {
 				$tabs      = is_array($decoded) ? $decoded : [];
 				$tab_shape = 'round';
+				$autoplay  = false;
+				$interval  = 5;
 			}
 			$shape_class = ($tab_shape === 'slant') ? ' mh_tab_shape_slant' : '';
 			$tabs = array_slice($tabs, 0, self::MAX_TABS);
@@ -144,6 +148,8 @@
 			$tab_info->title_size     = $title_size   ?: '15px';
 			$tab_info->content_size   = $content_size ?: '14px';
 			$tab_info->mh_tabs_attr   = htmlspecialchars($tabs_json, ENT_QUOTES, 'UTF-8');
+			$tab_info->autoplay      = $autoplay ? '1' : '0';
+			$tab_info->interval      = $interval;
 
 			Context::set('tab_info', $tab_info);
 
