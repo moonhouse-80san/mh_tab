@@ -67,6 +67,19 @@
 			return in_array($shape, self::VALID_SHAPES, true) ? $shape : 'round';
 		}
 
+		/* 탭 개수와 무관하게 이 탭 박스에서 한 번만 쓰이는 공통 CSS를 <style> 태그로 만든다.
+		 * JS(common_script)는 게시글 본문 인라인 <script>가 저장/출력 필터에 의해 제거되므로
+		 * 여기에 넣지 않는다. 대신 mh_tabs JSON에 그대로 남겨 두고, 외부 정적 파일
+		 * mh_tab.js가 각 .mh_tab_wrap의 mh_tabs 속성을 읽어 wrap 인자와 함께 실행한다
+		 * (popup 미리보기의 new Function('wrap', ...) 방식과 동일). */
+		private function buildCommonAssetsHtml(string $style, string $script = ''): string {
+			$style = trim($style);
+			if ($style === '') {
+				return '';
+			}
+			return '<style>' . $style . '</style>';
+		}
+
 		public function transHTML($xml_obj): string {
 			/* display.html(원본, 수정 불가)이 여전히 참조하는 값이라 남겨두지만,
 			 * 선택 시 색상이 탭 고유색과 어긋나 보인다는 피드백에 따라 더 이상
@@ -94,15 +107,19 @@
 			$decoded   = json_decode($tabs_json, true);
 
 			if (is_array($decoded) && isset($decoded['tabs']) && is_array($decoded['tabs'])) {
-				$tabs      = $decoded['tabs'];
-				$tab_shape = $this->safeShape((string) ($decoded['shape'] ?? 'round'));
-				$autoplay  = !empty($decoded['autoplay']);
-				$interval  = max(1, min(600, (int) ($decoded['interval'] ?? 5)));
+				$tabs          = $decoded['tabs'];
+				$tab_shape     = $this->safeShape((string) ($decoded['shape'] ?? 'round'));
+				$autoplay      = !empty($decoded['autoplay']);
+				$interval      = max(1, min(600, (int) ($decoded['interval'] ?? 5)));
+				$common_style  = (string) ($decoded['common_style']  ?? '');
+				$common_script = (string) ($decoded['common_script'] ?? '');
 			} else {
-				$tabs      = is_array($decoded) ? $decoded : [];
-				$tab_shape = 'round';
-				$autoplay  = false;
-				$interval  = 5;
+				$tabs          = is_array($decoded) ? $decoded : [];
+				$tab_shape     = 'round';
+				$autoplay      = false;
+				$interval      = 5;
+				$common_style  = '';
+				$common_script = '';
 			}
 			$shape_class = ($tab_shape === 'slant') ? ' mh_tab_shape_slant' : '';
 			$tabs = array_slice($tabs, 0, self::MAX_TABS);
@@ -134,6 +151,13 @@
 				$nav_html   .= '<label class="mh_tab_btn' . $shape_class . '" style="' . $btn_style . '" for="' . $radio_id . '">' . $title . '</label>';
 				$panel_html .= '<div class="mh_tab_panel" style="' . $panel_style . '">' . $content . '</div>';
 			}
+
+			/* display.html(원본, 수정 불가)에는 공통 스타일/스크립트를 위한 자리가 없으므로,
+			 * 템플릿이 그대로 출력하는 변수 중 가장 먼저 나오는 radio_html 앞에 실어 보낸다
+			 * (popup.js가 CKEditor 미리보기용으로 buildInlineTabCSS() 뒤에 이어 붙이는 것과
+			 * 동일한 위치 관계). radio_html은 빈 요소(input)들만 있어 앞에 무엇을 붙여도
+			 * 구조가 깨지지 않는다. */
+			$radio_html = $this->buildCommonAssetsHtml($common_style, $common_script) . $radio_html;
 
 			$tab_info = new stdClass();
 			$tab_info->radio_html     = $radio_html;

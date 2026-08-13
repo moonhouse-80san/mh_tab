@@ -64,6 +64,35 @@ function getCssVar(el, name) {
 	return (el && el.style) ? el.style.getPropertyValue(name).trim() : '';
 }
 
+/* 공통 스타일(CSS)/스크립트(JS) 입력값을 읽어온다. 탭 개수와 무관하게 이 탭 박스
+ * 전체에서 한 번만 쓰이는 값이라 탭 항목별 필드와 분리된 별도 textarea에 둔다. */
+function getCommonStyleValue() {
+	var el = xGetElementById('tab_common_style');
+	return el ? el.value : '';
+}
+function getCommonScriptValue() {
+	var el = xGetElementById('tab_common_script');
+	return el ? el.value : '';
+}
+
+/* wrapNode의 mh_tabs 속성(JSON)에서 common_style/common_script만 추출해 돌려준다.
+ * 이 두 값은 화면(DOM)에는 흔적이 남지 않고 mh_tabs 속성에만 저장되므로, 편집 화면에서
+ * 직접 수정한 내용을 실시간 동기화(syncNow)할 때도 여기서 읽어와 그대로 보존해야
+ * 탭 제목/내용만 고쳐도 공통 스타일/스크립트가 사라지지 않는다. */
+function currentCommonAssetsFromNode(wrapNode) {
+	var raw = wrapNode ? (wrapNode.getAttribute('mh_tabs') || '') : '';
+	try {
+		var parsed = JSON.parse(raw);
+		if (parsed && !Array.isArray(parsed)) {
+			return {
+				common_style:  typeof parsed.common_style  === 'string' ? parsed.common_style  : '',
+				common_script: typeof parsed.common_script === 'string' ? parsed.common_script : ''
+			};
+		}
+	} catch (e) { /* 구버전 문서(순수 배열) 등 파싱 실패 시 빈 값으로 처리 */ }
+	return { common_style: '', common_script: '' };
+}
+
 /* ── 에디터 작성 화면에서 직접 수정한 내용을 mh_tabs 속성에 실시간으로 반영 ──
  * class 속성이나 <style> 태그는 저장(HTML 정화) 과정에서 사라질 수 있지만,
  * 마커 div 자신의 속성(mh_tabs)은 에디터 컴포넌트로 인식되어 그대로 보존된다.
@@ -98,10 +127,13 @@ function attachLiveSync(wrapNode) {
 
 	function syncNow() {
 		var auto = currentAutoplayFromNode(wrapNode);
+		var common = currentCommonAssetsFromNode(wrapNode);
 		wrapNode.setAttribute('mh_tabs', JSON.stringify({
 			shape: currentShapeFromNode(wrapNode),
 			autoplay: auto.autoplay,
 			interval: auto.interval,
+			common_style: common.common_style,
+			common_script: common.common_script,
 			tabs: readTabsFromNode(wrapNode)
 		}));
 	}
@@ -469,13 +501,27 @@ function updatePreview() {
 	}
 
 	var markup = buildTabsMarkup('mh_tab_group_preview', tabsArr, getShapeValue());
+	var commonStyle = getCommonStyleValue().trim();
+	var commonScript = getCommonScriptValue().trim();
 	var html = '<div class="mh_tab_wrap" style="' + styleVarString(opt) + '">'
+		+ (commonStyle ? '<style>' + commonStyle + '</style>' : '')
 		+ markup.radioHtml
 		+ '<div class="mh_tab_nav">' + markup.navHtml + '</div>'
 		+ '<div class="mh_tab_panels">' + markup.panelHtml + '</div>'
 		+ '</div>';
 
 	preview.innerHTML = html;
+
+	/* innerHTML로 넣은 <style>은 브라우저가 바로 적용해주지만 <script>는 실행되지
+	 * 않으므로, 공통 스크립트는 wrap 변수를 넘겨 별도로 직접 실행해 미리보기에서도
+	 * 동작을 확인할 수 있게 한다(실제 삽입/저장되는 코드와 동일하게 wrap = 이 탭
+	 * 박스 전체 요소). 문법 오류 등으로 실패해도 팝업 자체가 깨지지 않도록 무시한다. */
+	if (commonScript) {
+		try {
+			var wrapEl = preview.querySelector('.mh_tab_wrap');
+			new Function('wrap', commonScript)(wrapEl);
+		} catch (e) { /* 미리보기 실행 실패는 무시 — 실제 삽입에는 영향 없음 */ }
+	}
 }
 
 /* 에디터 작성 영역(CKEditor iframe)은 front-end처럼 mh_tab.css를 별도로 불러오지
@@ -518,21 +564,40 @@ function buildNthOfTypeRules(targetSelector, decl) {
 	return selectors.join(',') + '{' + decl + '}';
 }
 
+/* 사용자가 입력한 공통 CSS만 <style> 태그로 만든다.
+ * JS(common_script)는 게시글 본문 인라인 <script>가 저장/출력 필터에 의해 제거되므로
+ * 여기에 넣지 않는다. mh_tabs JSON에 저장해 두고, 실제 사이트에서는 외부 파일
+ * mh_tab.js가 실행한다. 팝업 미리보기는 updatePreview()에서 new Function으로 별도 실행. */
+function buildCommonAssetsHTML(style, script) {
+	style = (style || '').trim();
+	return style ? '<style>' + style + '</style>' : '';
+}
+
 /* ── 최종 삽입용 HTML 생성 ── */
 function buildTabWrapperHTML() {
 	var tabsArr = collectTabsArray();
 	var shape = getShapeValue();
 	var autoplay = getAutoplayValue();
 	var interval = getIntervalValue();
+	var commonStyle = getCommonStyleValue();
+	var commonScript = getCommonScriptValue();
 	var opt = currentStyleOptions();
 	var groupName = 'mh_tab_group_' + Math.random().toString(36).slice(2, 10);
 	var markup = buildTabsMarkup(groupName, tabsArr, shape);
 	/* display.html(원본, 수정 불가)의 속성 목록에는 새 옵션을 추가할 자리가 없으므로,
-	 * 책갈피 모양(shape)과 자동전환 설정은 이 mh_tabs 하나의 속성 안에
-	 * { shape, autoplay, interval, tabs } 형태로 함께 실어 보낸다
-	 * (mh_tab.class.php에서도 동일하게 읽는다). mh_autoplay/mh_interval은
-	 * 실시간 동기화(readTabsFromNode)와 자동전환 스크립트가 참조하는 실제 값이다. */
-	var tabsJson = JSON.stringify({ shape: shape, autoplay: autoplay, interval: interval, tabs: tabsArr });
+	 * 책갈피 모양(shape)과 자동전환 설정, 공통 스타일/스크립트는 이 mh_tabs 하나의
+	 * 속성 안에 { shape, autoplay, interval, common_style, common_script, tabs }
+	 * 형태로 함께 실어 보낸다(mh_tab.class.php에서도 동일하게 읽는다). mh_autoplay/
+	 * mh_interval은 실시간 동기화(readTabsFromNode)와 자동전환 스크립트가 참조하는
+	 * 실제 값이다. */
+	var tabsJson = JSON.stringify({
+		shape: shape,
+		autoplay: autoplay,
+		interval: interval,
+		common_style: commonStyle,
+		common_script: commonScript,
+		tabs: tabsArr
+	});
 
 	return '<div class="mh_tab_wrap"'
 		+ ' editor_component="mh_tab"'
@@ -548,6 +613,7 @@ function buildTabWrapperHTML() {
 		+ ' mh_interval="' + interval + '"'
 		+ ' style="' + styleVarString(opt) + '">'
 		+ buildInlineTabCSS()
+		+ buildCommonAssetsHTML(commonStyle, commonScript)
 		+ markup.radioHtml
 		+ '<div class="mh_tab_nav">' + markup.navHtml + '</div>'
 		+ '<div class="mh_tab_panels">' + markup.panelHtml + '</div>'
@@ -673,6 +739,13 @@ function getTab() {
 		addTabItem(tab.title || '', tab.content || '', tab.tab_bg, tab.tab_color, tab.content_bg, tab.content_color);
 	});
 
+	/* 공통 스타일/스크립트는 화면(DOM)에는 흔적이 남지 않고 mh_tabs 속성(JSON)에만
+	 * 저장되므로, 위에서 탭 목록을 DOM에서 읽었는지(count > 0) JSON에서 읽었는지와
+	 * 무관하게 항상 mh_tabs 속성을 다시 읽어와 복원한다. */
+	var commonAssets = currentCommonAssetsFromNode(node);
+	xGetElementById('tab_common_style').value  = commonAssets.common_style;
+	xGetElementById('tab_common_script').value = commonAssets.common_script;
+
 	attachLiveSync(node);
 	updatePreview();
 }
@@ -699,6 +772,11 @@ function getTab() {
 		var ivEl = xGetElementById('tab_switch_interval');
 		if (ivEl) ivEl.addEventListener('blur', function() {
 			ivEl.value = getIntervalValue();
+		});
+
+		['tab_common_style', 'tab_common_script'].forEach(function(id) {
+			var el = xGetElementById(id);
+			if (el) el.addEventListener('input', updatePreview);
 		});
 
 		xGetElementById('tab-list').addEventListener('dragover', function(e) { e.preventDefault(); });
