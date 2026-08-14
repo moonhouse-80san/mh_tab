@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<component version="1.4">
+<component version="1.3">
 	<title xml:lang="ko">탭 박스</title>
 	<title xml:lang="en">Tab Box</title>
-	<version>1.4</version>
-	<date>2026-08-13</date>
+	<version>1.3</version>
+	<date>2026-07-24</date>
 	<author email_address="80san@moonhouse.co.kr" link="https://moonhouse.co.kr">
 		<name xml:lang="ko">팔공산</name>
 		<name xml:lang="en">80san</name>

@@ -534,12 +534,13 @@ function buildInlineTabCSS() {
 	return '<style>'
 		+ '.mh_tab_wrap{position:relative}'
 		+ '.mh_tab_radio{position:absolute;width:0;height:0;opacity:0;pointer-events:none}'
-		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0px;background:transparent}'
+		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0px;position:sticky;top:0;z-index:10;background:var(--mh_tab_content_bg,#fff);box-shadow:0 2px 6px rgba(0,0,0,.06)}'
 		+ '.mh_tab_btn{flex:1 1 auto;text-align:center;padding:10px 14px;background: var(--mh_tab_inactive_bg, #f5f5f5);color:var(--mh_tab_inactive_color,#555555);font-size:var(--mh_tab_title_size,15px);user-select:none;border-radius: 14px 14px 0 0;box-sizing:border-box}'
 		+ '.mh_tab_btn.mh_tab_shape_slant{border-radius:0;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 100%,0 100%);padding:10px 28px 10px 14px}'
 		/* 탭은 선택 여부와 무관하게 항상 자기 고유 색상을 유지하고, 선택 표시는
 		 * 글자를 흰색 + 검은 그림자로 강조하는 것으로 한다(실제 사이트의 mh_tab.css와 동일한 방식) */
 		+ buildNthOfTypeRules('.mh_tab_nav .mh_tab_btn', 'font-weight:600;color:#ffffff;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000,0 2px 3px rgba(0,0,0,.55);')
+		+ (function(){var s=[];for(var i=1;i<=MAX_TABS;i++){s.push('.mh_tab_radio:nth-of-type('+i+'):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type('+i+')::before');}return s.join(',')+'{content:"\\25B6 ";color:#e53935;text-shadow:none;font-weight:700}';})()
 		+ '.mh_tab_panels{background:transparent}'
 		/* 에디터 작성 화면에서는 실제 사이트와 달리 선택되지 않은 탭도 숨기지 않고
 		 * 전부 순서대로 펼쳐서 보여준다 — 그래야 각 탭 내용을 눈으로 보면서

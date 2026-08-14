@@ -14,12 +14,19 @@
 	pointer-events: none;
 }
 
+/* 탭 네비게이션 — 페이지(내용) 스크롤 시에도 상단에 고정 */
 .mh_tab_nav {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 6px;
 	margin-bottom: 0px;
-	background: transparent;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	/* 스크롤 시 아래 내용이 비치지 않도록 배경 유지 */
+	background: var(--mh_tab_content_bg, #fff);
+	/* 고정 시 아래 내용과 구분감 */
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .mh_tab_btn {
@@ -62,8 +69,8 @@
 	background: var(--mh_tab_content_bg, #fff);
 }
 
-/* 선택된 탭 표시 — 배경/탭 색상은 그대로 유지하고, 글자만 흰색 + 검은 그림자로
- * 강조해 "지금 보고 있는 탭"임을 나타낸다(밑줄 강조 대신) */
+/* 선택된 탭 표시 — 제목 앞에 빨간색 ▶ 화살표를 붙이고, 글자는 흰색 + 검은 그림자로
+ * 강조해 "지금 보고 있는 탭"임을 나타낸다 */
 .mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(1),
 .mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(2),
 .mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(3),
@@ -87,6 +94,32 @@
 	font-weight: 600;
 	color: #ffffff;
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 3px rgba(0,0,0,.55);
+}
+.mh_tab_radio:nth-of-type(1):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(1)::before,
+.mh_tab_radio:nth-of-type(2):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(2)::before,
+.mh_tab_radio:nth-of-type(3):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(3)::before,
+.mh_tab_radio:nth-of-type(4):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(4)::before,
+.mh_tab_radio:nth-of-type(5):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(5)::before,
+.mh_tab_radio:nth-of-type(6):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(6)::before,
+.mh_tab_radio:nth-of-type(7):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(7)::before,
+.mh_tab_radio:nth-of-type(8):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(8)::before,
+.mh_tab_radio:nth-of-type(9):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(9)::before,
+.mh_tab_radio:nth-of-type(10):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(10)::before,
+.mh_tab_radio:nth-of-type(11):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(11)::before,
+.mh_tab_radio:nth-of-type(12):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(12)::before,
+.mh_tab_radio:nth-of-type(13):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(13)::before,
+.mh_tab_radio:nth-of-type(14):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(14)::before,
+.mh_tab_radio:nth-of-type(15):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(15)::before,
+.mh_tab_radio:nth-of-type(16):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(16)::before,
+.mh_tab_radio:nth-of-type(17):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(17)::before,
+.mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(18)::before,
+.mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(19)::before,
+.mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20)::before {
+	content: "▶";
+	color: #e53935;
+	text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 2px 3px rgba(0,0,0,.55);
+	font-weight: 700;
+	margin-right:7px;
 }
 
 /* 선택된 탭에 대응하는 내용 패널 표시 */
