@@ -534,7 +534,7 @@ function buildInlineTabCSS() {
 	return '<style>'
 		+ '.mh_tab_wrap{position:relative}'
 		+ '.mh_tab_radio{position:absolute;width:0;height:0;opacity:0;pointer-events:none}'
-		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0px;position:sticky;top:0;z-index:10;background:var(--mh_tab_content_bg,#fff);box-shadow:0 2px 6px rgba(0,0,0,.06)}'
+		+ '.mh_tab_nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0px;position:sticky;top:0;z-index:10;background:transparent}'
 		+ '.mh_tab_btn{flex:1 1 auto;text-align:center;padding:10px 14px;background: var(--mh_tab_inactive_bg, #f5f5f5);color:var(--mh_tab_inactive_color,#555555);font-size:var(--mh_tab_title_size,15px);user-select:none;border-radius: 14px 14px 0 0;box-sizing:border-box}'
 		+ '.mh_tab_btn.mh_tab_shape_slant{border-radius:0;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 100%,0 100%);padding:10px 28px 10px 14px}'
 		/* 탭은 선택 여부와 무관하게 항상 자기 고유 색상을 유지하고, 선택 표시는

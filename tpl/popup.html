@@ -88,6 +88,22 @@
 				</td>
 			</tr>
 
+			<!-- 공통 스타일 / 스크립트 (탭 개수와 무관하게 이 탭 박스 전체에서 한 번만 적용) -->
+			<tr>
+				<th scope="row">공통 스타일 &<br> 스크립트</th>
+				<td>
+					<div class="hint" style="margin-bottom:6px;">{$lang->tab_common_hint}</div>
+					<div class="common-asset-field">
+						<label class="opt-label" for="tab_common_style">{$lang->tab_common_style}</label>
+						<textarea id="tab_common_style" class="common-asset-area" placeholder="{$lang->tab_common_style_ph}" spellcheck="false"></textarea>
+					</div>
+					<div class="common-asset-field">
+						<label class="opt-label" for="tab_common_script">{$lang->tab_common_script}</label>
+						<textarea id="tab_common_script" class="common-asset-area" placeholder="{$lang->tab_common_script_ph}" spellcheck="false"></textarea>
+					</div>
+				</td>
+			</tr>
+
 			<!-- 미리보기 -->
 			<tr>
 				<th scope="row">{$lang->tab_preview}</th>

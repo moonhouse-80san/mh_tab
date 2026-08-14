@@ -3,7 +3,7 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 
 #popBody { padding: 10px 0; }
 
-.adminTable { width: 100%; border-collapse: collapse; }
+.adminTable { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .adminTable th {
 	text-align: left;
 	padding: 7px 10px;
@@ -12,11 +12,13 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 	font-weight: 600;
 	white-space: nowrap;
 	vertical-align: top;
+	width: 110px;
 }
 .adminTable td {
 	padding: 7px 10px;
 	border: 1px solid #ddd;
 	vertical-align: middle;
+	width: auto;
 }
 
 /* 가로 인라인 묶음 */
@@ -202,6 +204,39 @@ body { font-size: 13px; font-family: -apple-system, BlinkMacSystemFont, 'Malgun 
 }
 .btn-reset-color:hover {
 	background: #f0f0f0;
+}
+
+/* 공통 스타일(CSS) / 스크립트(JS) 입력 영역
+ * 테이블 셀 안에서 textarea가 가로로 가득 차도록
+ * display:block + box-sizing + 부모 너비 100% 를 함께 지정한다. */
+.common-asset-field {
+	margin-bottom: 8px;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+.common-asset-field:last-child {
+	margin-bottom: 0;
+}
+.common-asset-field .opt-label {
+	display: block;
+	margin-bottom: 3px;
+	font-weight: 600;
+}
+textarea.common-asset-area,
+	.common-asset-area {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	min-height: 120px !important;
+	box-sizing: border-box !important;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 6px 8px;
+	font-size: 12px;
+	font-family: monospace;
+	line-height: 1.5;
+	resize: vertical;
 }
 
 /* 미리보기 영역 컨테이너 */

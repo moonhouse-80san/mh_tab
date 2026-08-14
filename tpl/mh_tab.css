@@ -23,10 +23,8 @@
 	position: sticky;
 	top: 0;
 	z-index: 10;
-	/* 스크롤 시 아래 내용이 비치지 않도록 배경 유지 */
-	background: var(--mh_tab_content_bg, #fff);
-	/* 고정 시 아래 내용과 구분감 */
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+	/* 책갈피(탭 버튼) 뒤 여백만 투명 — 탭 버튼 자체 배경색은 유지 */
+	background: transparent;
 }
 
 .mh_tab_btn {
@@ -115,7 +113,7 @@
 .mh_tab_radio:nth-of-type(18):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(18)::before,
 .mh_tab_radio:nth-of-type(19):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(19)::before,
 .mh_tab_radio:nth-of-type(20):checked ~ .mh_tab_nav .mh_tab_btn:nth-of-type(20)::before {
-	content: "▶";
+	content: "▶ ";
 	color: #e53935;
 	text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 2px 3px rgba(0,0,0,.55);
 	font-weight: 700;
