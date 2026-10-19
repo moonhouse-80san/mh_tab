@@ -122,6 +122,54 @@
 				$common_script = '';
 			}
 			$shape_class = ($tab_shape === 'slant') ? ' mh_tab_shape_slant' : '';
+
+			/* 에디터 본문에서 탭 안의 글/이미지를 직접 수정한 경우를 반영한다.
+			 * mh_tabs JSON은 본문을 수정해도 갱신되지 않으므로, 지금 보고 있는 글의 저장된 본문에서
+			 * mh_instance가 같은 탭 박스를 DOM으로 찾아 제목/내용을 읽는다. 코어가 $xml_obj->body로
+			 * 넘겨주는 값은 첫 </div>에서 잘리므로(탭 안에 다른 컴포넌트 등 div가 있으면 중간에서 끊김)
+			 * 사용하지 않는다. 글/탭 박스를 찾지 못하거나 제목·내용 개수가 맞지 않으면 기존처럼
+			 * JSON을 그대로 쓴다. 색상 등은 계속 JSON 기준이다. */
+			$instance     = (string) ($xml_obj->attrs->mh_instance ?? '');
+			$document_srl = (int) Context::get('document_srl');
+			$oDocument    = ($instance !== '' && $document_srl && class_exists('DOMDocument')) ? DocumentModel::getDocument($document_srl) : null;
+			if ($oDocument && $oDocument->isExists() && $oDocument->isAccessible()) {
+				$prev_errors = libxml_use_internal_errors(true);
+				$dom = new DOMDocument();
+				$dom->loadHTML('<?xml encoding="UTF-8">' . $oDocument->get('content'));
+				libxml_clear_errors();
+				libxml_use_internal_errors($prev_errors);
+
+				$xpath = new DOMXPath($dom);
+				$wrap  = null;
+				foreach ($xpath->query('//*[@mh_instance]') as $node) {
+					if ($node->getAttribute('mh_instance') === $instance) {
+						$wrap = $node;
+						break;
+					}
+				}
+				if ($wrap) {
+					$has_class = "contains(concat(' ', normalize-space(@class), ' '), ' %s ')";
+					$title_nodes = $xpath->query('.//*[' . sprintf($has_class, 'mh_tab_btn') . ']', $wrap);
+					$panel_nodes = $xpath->query('.//*[' . sprintf($has_class, 'mh_tab_panel') . ']', $wrap);
+					if ($title_nodes->length > 0 && $title_nodes->length === $panel_nodes->length) {
+						$merged = [];
+						foreach ($title_nodes as $i => $title_node) {
+							$inner = '';
+							foreach ($panel_nodes->item($i)->childNodes as $child) {
+								$inner .= $dom->saveHTML($child);
+							}
+							$saved    = is_array($tabs[$i] ?? null) ? $tabs[$i] : [];
+							$doc_title = trim($title_node->textContent);
+							$merged[] = array_merge($saved, [
+								'title'   => $doc_title !== '' ? $doc_title : (string) ($saved['title'] ?? ''),
+								'content' => $inner,
+							]);
+						}
+						$tabs = $merged;
+					}
+				}
+			}
+
 			$tabs = array_slice($tabs, 0, self::MAX_TABS);
 
 			$nav_html   = '';

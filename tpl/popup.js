@@ -29,10 +29,53 @@ function getShapeValue() {
 	return (slant && slant.checked) ? 'slant' : 'round';
 }
 
-/* wrapNode 안의 라벨에 이미 적용된 모양(class)을 읽어, 실시간 동기화 시 mh_tabs JSON에 그대로 보존한다 */
+/* 마커(탭 박스 최상위 요소)인지 판별한다. 저장 필터가 class를 지워도 editor_component 속성은 남는다 */
+function isTabWrapNode(node) {
+	return !!(node && node.getAttribute && (node.getAttribute('editor_component') === 'mh_tab'
+		|| (node.classList && node.classList.contains('mh_tab_wrap'))));
+}
+
+/* wrapNode의 mh_tabs 속성(JSON)을 { shape, tabs, common_style, ... } 객체로 읽는다.
+ * 구버전(순수 배열)은 { tabs: [...] }로 감싸 돌려주고, 읽을 수 없으면 null. */
+function parseTabsAttr(wrapNode) {
+	try {
+		var parsed = JSON.parse(wrapNode.getAttribute('mh_tabs') || '');
+		if (Array.isArray(parsed)) return { tabs: parsed };
+		return (parsed && typeof parsed === 'object') ? parsed : null;
+	} catch (e) {
+		return null;
+	}
+}
+
+/* 탭 제목/내용 요소를 찾는다.
+ * 새 구조: 마커 바로 아래 <ul><li>(제목)와 <section>(내용). 저장 필터가 class를 지워도 태그
+ * 구조만으로 찾을 수 있고, 서버(mh_tab.class.php)도 같은 구조를 읽는다.
+ * 예전 구조(.mh_tab_btn / .mh_tab_panel)로 저장된 글은 class로 찾는다. */
+function findTabElements(wrapNode) {
+	var ul = null, panels = [];
+	Array.prototype.forEach.call(wrapNode.children, function(child) {
+		if (child.tagName === 'UL' && !ul) ul = child;
+		else if (child.tagName === 'SECTION') panels.push(child);
+	});
+	if (ul && panels.length) {
+		return {
+			labels: Array.prototype.filter.call(ul.children, function(li) { return li.tagName === 'LI'; }),
+			panels: panels
+		};
+	}
+	return {
+		labels: wrapNode.querySelectorAll('.mh_tab_btn'),
+		panels: wrapNode.querySelectorAll('.mh_tab_panel')
+	};
+}
+
+/* wrapNode 안의 라벨에 이미 적용된 모양(class)을 읽어, 실시간 동기화 시 mh_tabs JSON에 그대로 보존한다.
+ * class가 지워진 글이면 mh_tabs JSON에 저장된 모양을 그대로 쓴다. */
 function currentShapeFromNode(wrapNode) {
 	var label = wrapNode.querySelector('.mh_tab_btn');
-	return (label && label.classList.contains('mh_tab_shape_slant')) ? 'slant' : 'round';
+	if (label) return label.classList.contains('mh_tab_shape_slant') ? 'slant' : 'round';
+	var saved = parseTabsAttr(wrapNode);
+	return (saved && saved.shape === 'slant') ? 'slant' : 'round';
 }
 
 /* 현재 선택된 탭 전환 방식(자동/수동) 여부를 읽어온다 */
@@ -80,17 +123,11 @@ function getCommonScriptValue() {
  * 직접 수정한 내용을 실시간 동기화(syncNow)할 때도 여기서 읽어와 그대로 보존해야
  * 탭 제목/내용만 고쳐도 공통 스타일/스크립트가 사라지지 않는다. */
 function currentCommonAssetsFromNode(wrapNode) {
-	var raw = wrapNode ? (wrapNode.getAttribute('mh_tabs') || '') : '';
-	try {
-		var parsed = JSON.parse(raw);
-		if (parsed && !Array.isArray(parsed)) {
-			return {
-				common_style:  typeof parsed.common_style  === 'string' ? parsed.common_style  : '',
-				common_script: typeof parsed.common_script === 'string' ? parsed.common_script : ''
-			};
-		}
-	} catch (e) { /* 구버전 문서(순수 배열) 등 파싱 실패 시 빈 값으로 처리 */ }
-	return { common_style: '', common_script: '' };
+	var parsed = wrapNode ? parseTabsAttr(wrapNode) : null;
+	return {
+		common_style:  (parsed && typeof parsed.common_style  === 'string') ? parsed.common_style  : '',
+		common_script: (parsed && typeof parsed.common_script === 'string') ? parsed.common_script : ''
+	};
 }
 
 /* ── 에디터 작성 화면에서 직접 수정한 내용을 mh_tabs 속성에 실시간으로 반영 ──
@@ -101,19 +138,23 @@ function currentCommonAssetsFromNode(wrapNode) {
  * 탭별 색상(인라인 CSS 변수)도 함께 읽어 같이 보존해야, 실시간 동기화 과정에서
  * mh_tabs 속성이 덮어써지면서 색상 정보가 사라지는 것을 막을 수 있다. */
 function readTabsFromNode(wrapNode) {
-	var labels = wrapNode.querySelectorAll('.mh_tab_btn');
-	var panels = wrapNode.querySelectorAll('.mh_tab_panel');
+	var found  = findTabElements(wrapNode);
+	var labels = found.labels, panels = found.panels;
 	var count  = Math.max(labels.length, panels.length);
+	/* 저장 필터가 인라인 CSS 변수(색상)를 지웠을 수 있으므로, 화면에서 읽지 못한 색상은
+	 * 기존 mh_tabs JSON의 같은 순서 탭 값을 그대로 유지한다. */
+	var saved = parseTabsAttr(wrapNode);
+	var savedTabs = (saved && Array.isArray(saved.tabs)) ? saved.tabs : [];
 	var tabsArr = [];
 	for (var i = 0; i < count; i++) {
-		var label = labels[i], panel = panels[i];
+		var label = labels[i], panel = panels[i], prev = savedTabs[i] || {};
 		tabsArr.push({
 			title:         label ? label.textContent.trim() : '',
 			content:       panel ? panel.innerHTML : '',
-			tab_bg:        getCssVar(label, '--mh_tab_inactive_bg'),
-			tab_color:     getCssVar(label, '--mh_tab_inactive_color'),
-			content_bg:    getCssVar(panel, '--mh_tab_content_bg'),
-			content_color: getCssVar(panel, '--mh_tab_content_color')
+			tab_bg:        getCssVar(label, '--mh_tab_inactive_bg')    || prev.tab_bg        || '',
+			tab_color:     getCssVar(label, '--mh_tab_inactive_color') || prev.tab_color     || '',
+			content_bg:    getCssVar(panel, '--mh_tab_content_bg')     || prev.content_bg    || '',
+			content_color: getCssVar(panel, '--mh_tab_content_color')  || prev.content_color || ''
 		});
 	}
 	return tabsArr;
@@ -126,6 +167,9 @@ function attachLiveSync(wrapNode) {
 	var doc = wrapNode.ownerDocument;
 
 	function syncNow() {
+		var tabsArr = readTabsFromNode(wrapNode);
+		/* 탭 구조를 하나도 찾지 못하면(필터로 구조가 바뀐 글 등) 기존 JSON을 빈 값으로 덮어쓰지 않는다 */
+		if (!tabsArr.length) return;
 		var auto = currentAutoplayFromNode(wrapNode);
 		var common = currentCommonAssetsFromNode(wrapNode);
 		wrapNode.setAttribute('mh_tabs', JSON.stringify({
@@ -134,7 +178,7 @@ function attachLiveSync(wrapNode) {
 			interval: auto.interval,
 			common_style: common.common_style,
 			common_script: common.common_script,
-			tabs: readTabsFromNode(wrapNode)
+			tabs: tabsArr
 		}));
 	}
 
@@ -670,7 +714,7 @@ function insertTab() {
 function getTab() {
 	if (typeof opener === 'undefined' || !opener) return;
 	var node = opener.editorPrevNode;
-	if (!node || !node.classList || !node.classList.contains('mh_tab_wrap')) return;
+	if (!isTabWrapNode(node)) return;
 	selected_node = node;
 
 	var ib = node.getAttribute('inactive_bg')    || '#f5f5f5';
@@ -690,25 +734,11 @@ function getTab() {
 	 * 무관하게 항상 유지되는 고유 색상)은 각 label의 --mh_tab_inactive_bg/color
 	 * 인라인 값에서 읽는다(옛 버전 문서라 값이 없으면 addTabItem()이 순서 기준
 	 * 기본 팔레트로 채운다). 책갈피 모양은 라벨의 클래스에서 판단한다. */
-	var labels = node.querySelectorAll('.mh_tab_btn');
-	var panels = node.querySelectorAll('.mh_tab_panel');
-	var count = Math.max(labels.length, panels.length);
-	var tabsArr = [];
+	var tabsArr = readTabsFromNode(node);
 	var shape = 'round';
 
-	if (count > 0) {
+	if (tabsArr.length > 0) {
 		shape = currentShapeFromNode(node);
-		for (var i = 0; i < count; i++) {
-			var label = labels[i], panel = panels[i];
-			tabsArr.push({
-				title:         label ? label.textContent.trim() : '',
-				content:       panel ? panel.innerHTML : '',
-				tab_bg:        getCssVar(label, '--mh_tab_inactive_bg'),
-				tab_color:     getCssVar(label, '--mh_tab_inactive_color'),
-				content_bg:    getCssVar(panel, '--mh_tab_content_bg'),
-				content_color: getCssVar(panel, '--mh_tab_content_color')
-			});
-		}
 	} else {
 		/* 안전장치: 본문에서 탭 구조를 찾지 못했을 때만 mh_tabs 속성(JSON) 사용.
 		 * DOM getAttribute()는 이미 HTML 엔티티를 디코딩한 상태로 반환하므로 그대로 JSON.parse 가능.
@@ -783,7 +813,7 @@ function getTab() {
 		xGetElementById('tab-list').addEventListener('dragover', function(e) { e.preventDefault(); });
 
 		var node = (typeof opener !== 'undefined' && opener) ? opener.editorPrevNode : null;
-		var isEditing = node && node.classList && node.classList.contains('mh_tab_wrap');
+		var isEditing = isTabWrapNode(node);
 
 		if (isEditing) {
 			getTab();
